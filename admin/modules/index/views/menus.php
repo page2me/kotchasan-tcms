@@ -34,7 +34,7 @@ class View extends \Kotchasan\View
     // ตารางรายการเมนู
     $table = new DataTable(array(
       /* โหลดข้อมูลมาแสดงผลรูปแบบแอเรย์ */
-      'datas' => \Index\Menus\Model::get(),
+      'datas' => \Index\Menus\Model::all(),
       /* ตั้งค่าการกระทำของของตัวเลือกต่างๆ ด้านล่างตาราง ซึ่งจะใช้ร่วมกับการขีดถูกเลือกแถว */
       'action' => 'index.php/index/model/menus/action',
       'actions' => array(

@@ -25,21 +25,30 @@ class Model
   /**
    * อ่านรายการโมดูลที่ติดตั้งแล้ว
    *
-   * @param int $id 0 คืนค่าทุกรายการ, มากกว่า 0 ค้นหารายการที่ต้องการ
+   * @param int $id -1 คืนค่าทุกรายการ, 0 สำหรับการสร้างหน้าเพจใหม่, มากกว่า 0 ค้นหารายการที่ต้องการ
    * @return array คืนค่ารายการที่พบ, ไม่พบคืนค่าแอเรย์ว่าง
    */
-  public static function get($id = 0)
+  public static function get($id)
   {
-    $datas = array();
-    foreach (glob(ROOT_PATH.DATA_FOLDER.'index/*.php') as $item) {
-      $page = include($item);
-      if ($id == 0) {
-        $datas[] = $page;
-      } elseif ($page['id'] == $id) {
-        return $page;
+    if ($id === 0) {
+      // ใหม่
+      return array(
+        'id' => 0
+      );
+    } else {
+      $datas = array();
+      foreach (glob(ROOT_PATH.DATA_FOLDER.'index/*.php') as $item) {
+        $page = include($item);
+        if ($id === -1) {
+          // คืนค่าทุกรายการ
+          $datas[] = $page;
+        } elseif ($page['id'] == $id) {
+          // คืนค่ารายการที่ต้องการ (แก้ไข)
+          return $page;
+        }
       }
+      return $datas;
     }
-    return $datas;
   }
 
   /**
@@ -107,11 +116,13 @@ class Model
       );
       // รายการที่แก้ไข 0 รายการใหม่
       $id = $request->post('write_id')->toInt();
-      // ตรวจสอบรายการที่แก้ไข
+      // ตรวจสอบค่าที่ส่งมา
+      $ret = array();
       if ($id > 0) {
-        $page = self::get($id);
+        // ตรวจสอบรายการที่แก้ไข
+        $index = self::get($id);
       }
-      if ($id > 0 && empty($page)) {
+      if ($id > 0 && empty($index)) {
         $ret['alert'] = 'ไม่พบข้อมูลที่แก้ไข กรุณารีเฟรช';
       } elseif ($save['module'] == '') {
         $ret['alert'] = 'กรุณากรอก โมดูล';

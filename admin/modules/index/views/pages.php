@@ -35,7 +35,7 @@ class View extends \Kotchasan\View
     // ตารางรายการหน้าเพจ
     $table = new DataTable(array(
       /* โหลดข้อมูลมาแสดงผลรูปแบบแอเรย์ */
-      'datas' => \Index\Pages\Model::get(),
+      'datas' => \Index\Pages\Model::get(-1),
       /* กำหนดการแสดงผลตัวแบ่งหน้า */
       'perPage' => $request->cookie('pages_perPage', 30)->toInt(),
       /* กำหนดวิธีการจัดรูปแบบข้อมูลแต่ละแถวในการแสดงผลด้วยตัวเอง */

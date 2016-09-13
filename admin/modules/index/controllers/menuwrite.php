@@ -27,24 +27,7 @@ class Controller extends \Kotchasan\Controller
     // แอดมิน
     if (Login::isMember()) {
       // ข้อมูลที่ต้องการ
-      $id = $request->get('id')->toInt();
-      // โหลดรายการเมนูทั้งหมด
-      $menus = \Index\Menus\Model::get();
-      if ($id > 0) {
-        // ตรวจสอบรายการที่แก้ไข
-        if (isset($menus[$id])) {
-          $index = $menus[$id];
-          $index['last_id'] = $id;
-        } else {
-          $index = null;
-        }
-      } else {
-        // ใหม่
-        $index = array(
-          'id' => sizeof($menus) + 1,
-          'last_id' => 0
-        );
-      }
+      $index = \Index\Menus\Model::get($request->get('id')->toInt());
       if ($index) {
         // แสดงผล
         $section = Html::create('section');

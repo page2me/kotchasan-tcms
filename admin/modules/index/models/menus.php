@@ -22,11 +22,40 @@ class Model
 {
 
   /**
+   * อ่านรายการเมนูที่ ID สำหรับการแก้ไข
+   * หรือ อ่าน ID ถัดไป ของเมนู สำหรับการสร้างเมนูใหม่
+   *
+   * @param int $id ID ของรายการที่ต้องการ
+   * @return array|boolean คืนค่ารายการที่พบ, ไม่พบคืนค่า false
+   */
+  public static function get($id)
+  {
+    // อ่านรายการเมนูทั้งหมด
+    $menus = self::all();
+    if ($id > 0) {
+      // ตรวจสอบรายการที่แก้ไข
+      if (isset($menus[$id])) {
+        $index = $menus[$id];
+        $index['last_id'] = $id;
+      } else {
+        $index = false;
+      }
+    } else {
+      // ใหม่
+      $index = array(
+        'id' => sizeof($menus) + 1,
+        'last_id' => 0
+      );
+    }
+    return $index;
+  }
+
+  /**
    * อ่านรายการเมนูทั้งหมด
    *
    * @return array
    */
-  public static function get()
+  public static function all()
   {
     $datas = array();
     if (is_file(ROOT_PATH.DATA_FOLDER.'menus.php')) {
@@ -52,7 +81,7 @@ class Model
         $ids = explode(',', $request->post('id')->filter('\d,'));
         $save = array();
         $n = 1;
-        foreach (self::get() as $item) {
+        foreach (self::all() as $item) {
           if (!in_array($item['id'], $ids)) {
             $item['id'] = $n;
             $save[$item['module']] = $item;
@@ -84,7 +113,7 @@ class Model
       // รายการที่แก้ไข 0 รายการใหม่
       $id = $request->post('last_id')->toInt();
       // โหลดรายการเมนูทั้งหมด
-      $menus = self::get();
+      $menus = self::all();
       // ตรวจสอบค่าที่ส่งมา
       $ret = array();
       if ($id > 0 && !isset($menus[$id])) {
